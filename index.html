@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe of Images | Shreyansh Shukla</title>
+    <style>
+        .card-img-container {
+            position: relative;
+            background: #111;
+            /* Placeholder color */
+            overflow: hidden;
+        }
+
+        /* Jab tak image load na ho, ek shimmer effect dikhega */
+        .card-img-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            100% {
+                left: 100%;
+            }
+        }
+
+        :root {
+            --gold: #ffcc00;
+            --gold-glow: rgba(255, 204, 0, 0.4);
+            --bg: #050505;
+            --card-bg: #111111;
+            --glass: rgba(255, 255, 255, 0.03);
+            --text-dim: #999;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Particle Effect Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.5) 0%, transparent 100%);
+            z-index: -1;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn {
+            background: var(--glass);
+            color: #888;
+            border: 1px solid #333;
+            padding: 12px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--gold-glow);
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            padding: 60px 20px;
+            max-width: 1400px;
+            margin: auto;
+            min-height: 90vh;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* --- HERO BANNER --- */
+        .hero-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=100&w=3840&auto=format&fit=crop');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            padding: 120px 20px;
+            border-radius: 50px;
+            margin-bottom: 60px;
+            border: 1px solid #222;
+            position: relative;
+        }
+
+        .hero-banner h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+
+        /* --- QUICK STATS --- */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #111, #080808);
+            padding: 35px;
+            border-radius: 30px;
+            border: 1px solid #222;
+        }
+
+        .stat-card:hover {
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .stat-card h2 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        /* --- GRID & CARDS --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid #1a1a1a;
+            text-align: left;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(255, 204, 0, 0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+            image-rendering: -webkit-optimize-contrast;
+            /* Sharper Images */
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
+        }
+
+        .card-body {
+            padding: 25px;
+            background: linear-gradient(to bottom, transparent, #0d0d0d);
+        }
+
+        .card-body h3 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body p {
+            color: #777;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* --- CONTENT BOXES --- */
+        .content-box {
+            background: #080808;
+            padding: clamp(30px, 5vw, 70px);
+            border-radius: 40px;
+            text-align: left;
+            border-left: 5px solid var(--gold);
+            border-top: 1px solid #222;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                gap: 8px;
+                padding: 10px 5px;
+                flex-wrap: wrap;
+            }
+
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.6rem;
+            }
+
+            .hero-banner {
+                padding: 60px 15px;
+                border-radius: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="topNav">
+        <button class="nav-btn active" onclick="showPage('home')">Home</button>
+        <button class="nav-btn" onclick="showPage('more')">Explore Universe</button>
+        <button class="nav-btn" onclick="showPage('about')">About Creator</button>
+        <button class="nav-btn" onclick="showPage('help')">Help Center</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- --- HOME PAGE --- -->
+        <div id="home" class="section active">
+            <div class="hero-banner">
+                <h1>Digital Universe</h1>
+                <p>Curated visual archives by <span class="highlight">Shreyansh Shukla</span>. Where programming meets
+                    the art of AI storytelling.</p>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <h2>JARVIS 1.0</h2>
+                    <p>Python AI Assistant</p>
+                </div>
+                <div class="stat-card">
+                    <h2>HISTORY AI</h2>
+                    <p>Cinematic Visuals</p>
+                </div>
+                <div class="stat-card">
+                    <h2>500+</h2>
+                    <p>Cinematic Assets</p>
+                </div>
+            </div>
+
+            <h2 style="text-align:left; margin-bottom:30px; font-size:1.8rem; letter-spacing:1px;">
+                <span style="border-bottom: 2px solid var(--gold); padding-bottom: 5px;">Featured Masterpieces</span>
+            </h2>
+            <div class="grid" id="homeGrid"></div>
+        </div>
+
+        <!-- --- EXPLORE PAGE --- -->
+        <div id="more" class="section">
+            <h1 style="margin-bottom:40px; font-size: clamp(2rem, 5vw, 3rem);">Discover <span
+                    class="highlight">Realms</span></h1>
+            <div id="categorySelection" class="grid">
+                <!-- Categories via JS -->
+            </div>
+
+            <div id="galleryDisplay" style="display:none;">
+                <button class="nav-btn" onclick="backToCats()" style="margin-bottom:40px;">← Back to All
+                    Universes</button>
+                <h2 id="galleryTitle"
+                    style="color:var(--gold); font-size: 3rem; margin-bottom: 30px; text-transform: uppercase;"></h2>
+                <div class="grid" id="galleryGrid"></div>
+            </div>
+        </div>
+
+        <!-- --- ABOUT PAGE --- -->
+        <div id="about" class="section">
+            <div class="content-box">
+                <h1 style="color: var(--gold); font-size: 3.5rem; margin-bottom: 10px;">SHREYANSH SHUKLA</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 30px; color: #666; letter-spacing: 2px;">DEVELOPER | AI
+                    ARTIST | CREATOR</p>
+                <hr style="border: 0; border-top: 1px solid #222; margin-bottom: 35px;">
+
+                <p>Namaste! Main <span class="highlight">Shreyansh Shukla</span> hoon. Ek software developer jo code aur
+                    creativity ke intersection par kaam karna pasand karta hai. Mera goal hamesha technology ko visually
+                    stunning tarike se present karna raha hai.</p>
+
+                <p style="margin-top: 25px;">Maine <span class="highlight">JARVIS 1.0</span> jaisa automation tool
+                    design kiya hai jo meri programming skills ko darshata hai, aur <span class="highlight">HISTORY
+                        AI</span> ke madhyam se main purane itihaas ko futuristic cinematic visuals mein dhakta hoon.
+                </p>
+
+                <p style="margin-top: 25px;">Yahan is platform par aapko mere vision ki ek jhalak milegi. Har image aur
+                    har line of code ek naye perspective ko janm deti hai. Welcome to my world!</p>
+            </div>
+        </div>
+
+        <!-- --- HELP PAGE --- -->
+        <div id="help" class="section">
+            <div class="content-box">
+                <h1 style="margin-bottom: 35px; border-bottom: 1px solid #222; padding-bottom: 15px;">Platform <span
+                        class="highlight">Navigation</span></h1>
+
+                <p>1. <span class="highlight">Interactive Galleries:</span> Aap "Explore Universe" mein jaakar kisi bhi
+                    category card par click karke uske andar ki saari exclusive images dekh sakte hain.</p>
+
+                <p style="margin-top: 25px;">2. <span class="highlight">Quality Control:</span> Sabhi images Ultra-HD
+                    resolution mein hain. Behtar experience ke liye fast internet connection ka use karein.</p>
+
+                <p style="margin-top: 25px;">3. <span class="highlight">Creator Insights:</span> "About Creator" section
+                    mein jaakar aap mere tech-stack aur future projects ke baare mein jaan sakte hain.</p>
+
+                <p style="margin-top: 25px;">4. <span class="highlight">Smooth Experience:</span> Humne is site ko
+                    smooth animations aur fast transitions ke liye optimize kiya hai.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const imageDatabase = {
+            featured: [
+                "https://m.media-amazon.com/images/I/613hfI4O6SL.jpg",
+                "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=100&w=3840&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=100&w=3840&auto=format&fit=crop"
+            ],
+            universes: {
+                "Nature 🌿": [
+                    "https://images.unsplash.com/photo-1552083375-1447ce886485?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1470115636492-6d2b56f9146d?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1421789665209-c9b2a435e3dc?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1539634262233-7c0b48ab9503?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1669295395768-6ef852fddc90?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1581881067989-7e3eaf45f4f6?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1544961371-516024f8e267?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1675448891094-0f3acc556fdb?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1569604402759-c8e0c98766f9?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1530908295418-a12e326966ba?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1669295395788-2c22b1431f24?w=3840&q=100&auto=format&fit=crop"
+                ],
+                "Deep Space 🚀": [
+                    "https://images.unsplash.com/photo-1548625361-58a9b86aa83b?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1661705969607-cde73828023d?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1457364887197-9150188c107b?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1484589065579-248aad0d8b13?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1566345984367-fa2ba5cedc17?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1447433865958-f402f562b843?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1669839137069-4166d6ea11f4?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1498590880827-3f79fdcd7fbe?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1537420327992-d6e192287183?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1676607444703-92110b5faf7d?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1460186136353-977e9d6085a1?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1454817481404-7e84c1b73b4a?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1491466424936-e304919aada7?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1675826774817-fe983ceb0475?w=3840&q=100&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1701453831008-ea11046da960?w=3840&q=100&auto=format&fit=crop",
+                    "https://plus.unsplash.com/premium_photo-1667428818562-fc8379f23bfe?w=3840&q=100&auto=format&fit=crop"
+                ],
+                "Technology 💻": ["https://images.unsplash.com/photo-1518770660439-4636190af475?q=100&w=3840&auto=format&fit=crop"],
+                "Wildlife 🐯": ["https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=100&w=3840&auto=format&fit=crop"],
+                "Cyberpunk 🤖": ["https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=100&w=3840&auto=format&fit=crop"]
+            }
+        };
+
+        function showPage(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(id).classList.add('active');
+
+            // Add active class to current nav button
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(id.toLowerCase())) btn.classList.add('active');
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize Home Grid
+        const hGrid = document.getElementById('homeGrid');
+        imageDatabase.featured.forEach((url, i) => {
+            hGrid.innerHTML += `
+                <div class="card">
+                    <div class="card-img-container">
+                        <img src="${url}" loading="lazy" onerror="this.src='https://via.placeholder.com/3840x2160?text=Cinematic+Asset'">
+                    </div>
+                    <div class="card-body">
+                        <h3>Featured Asset #${i + 1}</h3>
+                        <p>Ultra-HD cinematic masterpiece from the official Shreyansh Shukla archives.</p>
+                    </div>
+                </div>`;
+        });
+
+        // Initialize Category Selection
+        const cSelect = document.getElementById('categorySelection');
+        Object.keys(imageDatabase.universes).forEach(cat => {
+            cSelect.innerHTML += `
+                <div class="card" style="cursor:pointer; padding:60px 20px; text-align:center; background:var(--glass);" onclick="openUniverse('${cat}')">
+                    <h2 style="margin:0; font-size: 1.6rem; letter-spacing:2px;">${cat}</h2>
+                    <p style="color:var(--gold); margin-top:15px; font-size:0.7rem; font-weight:bold;">ACCESS ARCHIVE</p>
+                </div>`;
+        });
+
+        function openUniverse(name) {
+            document.getElementById('categorySelection').style.display = 'none';
+            document.getElementById('galleryDisplay').style.display = 'block';
+            document.getElementById('galleryTitle').innerText = name;
+
+            const gGrid = document.getElementById('galleryGrid');
+            gGrid.innerHTML = "";
+
+            imageDatabase.universes[name].forEach((url, i) => {
+                // Smart Optimization: Grid mein 800px ki image load hogi (sharp but fast)
+                // Click karne par hi full 4K link kaam karega
+                const fastUrl = url.replace('w=3840', 'w=800').replace('q=100', 'q=80');
+
+                gGrid.innerHTML += `
+            <div class="card" style="animation-delay: ${i * 0.05}s">
+                <div class="card-img-container" style="background: #111;">
+                    <img src="${fastUrl}" 
+                         loading="lazy" 
+                         style="opacity: 0; transition: opacity 0.5s ease-in-out;"
+                         onload="this.style.opacity='1'"
+                         onerror="this.src='https://via.placeholder.com/800x600?text=Loading+Asset...'">
+                </div>
+                <div class="card-body">
+                    <h3>${name} View #${i + 1}</h3>
+                    <p>Optimized for fast viewing.</p>
+                    <a href="${url}" target="_blank" style="color:var(--gold); font-size:0.7rem; text-decoration:none; margin-top:10px; display:inline-block;">VIEW FULL 4K →</a>
+                </div>
+            </div>`;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToCats() {
+            document.getElementById('categorySelection').style.display = 'grid';
+            document.getElementById('galleryDisplay').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+    <footer style="text-align:center; padding:20px; color:#777; font-size:0.8rem; border-top:1px solid #222; margin-top:40px;">
+    © 2026 Shreyansh Shukla. All Rights Reserved.
+</footer>
+</body>
+
+</html>
